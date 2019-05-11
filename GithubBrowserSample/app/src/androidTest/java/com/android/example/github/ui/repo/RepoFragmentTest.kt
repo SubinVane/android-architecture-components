@@ -16,21 +16,22 @@
 
 package com.android.example.github.ui.repo
 
-import android.arch.lifecycle.MutableLiveData
-import android.databinding.DataBindingComponent
-import android.support.annotation.StringRes
-import android.support.test.InstrumentationRegistry
-import android.support.test.espresso.Espresso.onView
-import android.support.test.espresso.action.ViewActions.click
-import android.support.test.espresso.assertion.ViewAssertions.doesNotExist
-import android.support.test.espresso.assertion.ViewAssertions.matches
-import android.support.test.espresso.matcher.ViewMatchers.hasDescendant
-import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
-import android.support.test.espresso.matcher.ViewMatchers.withId
-import android.support.test.espresso.matcher.ViewMatchers.withText
-import android.support.test.rule.ActivityTestRule
-import android.support.test.runner.AndroidJUnit4
+import androidx.lifecycle.MutableLiveData
+import androidx.databinding.DataBindingComponent
+import androidx.annotation.StringRes
+import androidx.test.InstrumentationRegistry
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.rule.ActivityTestRule
+import androidx.test.runner.AndroidJUnit4
 import androidx.navigation.NavController
+import androidx.navigation.fragment.FragmentNavigator
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentBindingAdapters
 import com.android.example.github.testing.SingleFragmentActivity
@@ -41,7 +42,6 @@ import com.android.example.github.util.RecyclerViewMatcher
 import com.android.example.github.util.TaskExecutorWithIdlingResourceRule
 import com.android.example.github.util.TestUtil
 import com.android.example.github.util.ViewModelUtil
-import com.android.example.github.util.matcher
 import com.android.example.github.util.mock
 import com.android.example.github.vo.Contributor
 import com.android.example.github.vo.Repo
@@ -51,7 +51,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
+import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.mock
@@ -78,7 +80,7 @@ class RepoFragmentTest {
     private lateinit var mockBindingAdapter: FragmentBindingAdapters
 
     private val repoFragment = TestRepoFragment().apply {
-        arguments = RepoFragmentArgs.Builder("a", "b").build().toBundle()
+        arguments = RepoFragmentArgs("a", "b").toBundle()
     }
 
     @Before
@@ -174,7 +176,8 @@ class RepoFragmentTest {
         setContributors("aa", "bb", "cc")
         onView(withText("cc")).perform(click())
         verify(repoFragment.navController).navigate(
-                RepoFragmentDirections.showUser("cc").matcher()
+                eq(RepoFragmentDirections.showUser("cc")),
+                any(FragmentNavigator.Extras::class.java)
         )
     }
 
