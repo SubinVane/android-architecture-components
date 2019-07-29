@@ -41,12 +41,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(path: ':lib')
+
     implementation deps.kotlin.stdlib
     implementation deps.work.runtime_ktx
+    implementation deps.lifecycle.extensions
     implementation deps.support.app_compat
     implementation deps.support.cardview
     implementation deps.support.design
@@ -59,6 +65,7 @@ dependencies {
     implementation deps.glide.runtime
 
     testImplementation deps.junit
+    androidTestImplementation deps.atsl.ext_junit
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
     androidTestImplementation deps.espresso.core
